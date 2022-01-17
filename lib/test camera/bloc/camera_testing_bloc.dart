@@ -23,38 +23,38 @@ class CameraTestingBloc extends Bloc<CameraTestingEvent, CameraTestingState> {
     on<DisposeCameraEvent>(_disposeCamera);
   }
 
-  Future<void> _initCamera(InitCameraEvent event, Emitter<CameraTestingState> emit) async {
-    print("--- Event :- _initCamera :: Current State :- $state");
-    try {
-      var cameraList = await availableCameras(); // gets all available cameras from device
+Future<void> _initCamera(InitCameraEvent event, Emitter<CameraTestingState> emit) async {
+  print("--- Event :- _initCamera :: Current State :- $state");
+  try {
+    var cameraList = await availableCameras(); // gets all available cameras from device
 
-      if (_controller != null) {
-        _tickerSubscription?.cancel();
-        await _controller!.dispose();
-      }
-      CameraDescription cameraDescription;
-      if (cameraList.length == 1) {
-        cameraDescription = cameraList[0]; // for desktop
-      } else {
-        cameraDescription = cameraList[1]; // for mobile select front camera
-      }
-      final CameraController cameraController = CameraController(
-        cameraDescription,
-        ResolutionPreset.medium,
-        enableAudio: true,
-      );
-      _controller = cameraController;
-      if (cameraController.value.hasError) {
-        emit(const ErrorInCameraState(null));
-      }
-      await cameraController.initialize();
-      emit(CameraReadyState(_controller));
-
-    } on CameraException catch (e) {
+    if (_controller != null) {
+      _tickerSubscription?.cancel();
+      await _controller!.dispose();
+    }
+    CameraDescription cameraDescription;
+    if (cameraList.length == 1) {
+      cameraDescription = cameraList[0]; // for desktop
+    } else {
+      cameraDescription = cameraList[1]; // for mobile select front camera
+    }
+    final CameraController cameraController = CameraController(
+      cameraDescription,
+      ResolutionPreset.medium,
+      enableAudio: true,
+    );
+    _controller = cameraController;
+    if (cameraController.value.hasError) {
       emit(const ErrorInCameraState(null));
     }
+    await cameraController.initialize();
+    emit(CameraReadyState(_controller));
 
+  } on CameraException catch (e) {
+    emit(const ErrorInCameraState(null));
   }
+
+}
 
   Future<void> _startRecording(StartRecordingEvent event, Emitter<CameraTestingState> emit) async {
     // _controller.startVideoRecording()

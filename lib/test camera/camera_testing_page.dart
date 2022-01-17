@@ -60,10 +60,10 @@ class _CameraTestingPageState extends State<CameraTestingPage> with WidgetsBindi
   }
 
   Widget _webLayout() {
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        var maxHeight = constraints.maxHeight;
-        var maxWidth = constraints.maxWidth;
+      return LayoutBuilder(
+        builder: (context, constraints) {
+          var maxHeight = constraints.maxHeight;
+          var maxWidth = constraints.maxWidth;
         if (maxHeight > 500 && maxWidth > 600) {
           // resize the content
           return Container(

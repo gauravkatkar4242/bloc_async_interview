@@ -1,5 +1,6 @@
+import 'package:bloc_async_interview/record%20reponse/bloc/record_response_bloc.dart';
+import 'package:bloc_async_interview/record%20reponse/record_response_page.dart';
 import 'package:bloc_async_interview/test%20camera/bloc/camera_testing_bloc.dart';
-import 'package:bloc_async_interview/test%20camera/camera_testing_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -14,19 +15,21 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
-        providers: [
+      providers: [
         BlocProvider<CameraTestingBloc>(
-        create: (BuildContext context) => CameraTestingBloc(),
-    ),
-
-    ],
-    child: MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
+          create: (BuildContext context) => CameraTestingBloc(),
+        ),
+        BlocProvider<RecordResponseBloc>(
+            create: (BuildContext context) => RecordResponseBloc()),
+      ],
+      child: MaterialApp(
+        title: 'Flutter Demo',
+        theme: ThemeData(
+          primarySwatch: Colors.blue,
+        ),
+        // home: const CameraTestingPage(),
+        home: const RecordResponsePage(),
       ),
-      home: const CameraTestingPage(),
-    ),
     );
   }
 }

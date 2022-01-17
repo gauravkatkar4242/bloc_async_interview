@@ -10,10 +10,8 @@ abstract class CameraTestingEvent extends Equatable {
 class InitCameraEvent extends CameraTestingEvent{}
 class StartRecordingEvent extends CameraTestingEvent{}
 class TimerTickedEvent extends CameraTestingEvent{
-
   const TimerTickedEvent({required this.duration});
   final int duration;
-
 
 }
 class StopRecordingEvent extends CameraTestingEvent{}
