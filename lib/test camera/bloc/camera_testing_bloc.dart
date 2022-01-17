@@ -4,7 +4,7 @@ import 'package:bloc/bloc.dart';
 import 'package:camera/camera.dart';
 import 'package:equatable/equatable.dart';
 
-import '../timer.dart';
+import '../../timer.dart';
 
 part 'camera_testing_event.dart';
 part 'camera_testing_state.dart';
