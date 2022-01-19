@@ -21,6 +21,12 @@ class CameraReadyState extends CameraTestingState {
 
 }
 
+class RecordingCompletedState extends CameraTestingState {
+
+  const RecordingCompletedState(CameraController? cameraController) : super(cameraController);
+
+}
+
 class RecordingInProgressState extends CameraTestingState {
 
   const RecordingInProgressState(CameraController? cameraController,  this.duration) : super(cameraController,timeElapsed: duration);

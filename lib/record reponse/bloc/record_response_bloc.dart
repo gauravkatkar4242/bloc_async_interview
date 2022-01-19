@@ -72,7 +72,7 @@ class RecordResponseBloc extends Bloc<RecordResponseEvent, RecordResponseState> 
     } else if (event.duration == 0) {
       add(StartRecordingEvent());
       // emit(RecordingInProgressState(_controller));
-    } else if (event.duration >= 100) {
+    } else if (event.duration >= 1000) {
       add(StopRecordingEvent());
     } else {
       emit(RecordingInProgressState(_controller, event.duration));

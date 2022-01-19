@@ -1,12 +1,9 @@
+import 'package:bloc_async_interview/record%20reponse/bloc/question_part_cubit.dart';
 import 'package:bloc_async_interview/record%20reponse/bloc/record_response_bloc.dart';
-import 'package:bloc_async_interview/record%20reponse/question_part.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
-import '../next_page.dart';
-
 
 class ResponsePageCameraScreen extends StatefulWidget
     with WidgetsBindingObserver {
@@ -53,14 +50,13 @@ class _ResponsePageCameraScreenState extends State<ResponsePageCameraScreen>
           );
         } else {
           return LayoutBuilder(builder: (context, constraints) {
-            int timer = context.select(
-                (RecordResponseBloc bloc) => bloc.state.timeElapsed);
-            int min = (timer / 60).round();
+            int timer = context
+                .select((RecordResponseBloc bloc) => bloc.state.timeElapsed);
+            int min = (timer / 60).floor();
             int sec = (timer % 60);
             return Stack(
               // alignment: Alignment.center,
               children: [
-
                 kIsWeb
                     /* for camera screen web 👇*/
                     ? AspectRatio(
@@ -143,78 +139,97 @@ class _ResponsePageCameraScreenState extends State<ResponsePageCameraScreen>
                       ),
                     ),
                   ),
-
-                  /* for recording inProgress Icon 👇 */
-                  Align(
-                    alignment: Alignment.topLeft,
-                    child: Padding(
-                      padding: const EdgeInsets.only(top: 12.0, left: 8),
-                      child: FittedBox(
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            const Icon(
-                              Icons.circle,
-                              color: Colors.red,
-                              size: 16.0,
-                            ),
-                            const SizedBox(
-                              width: 5,
-                            ),
-                            Container(
-                              decoration: const BoxDecoration(
-                                color: Colors.black26,
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(4.0)),
-                              ),
-                              padding: const EdgeInsets.symmetric(
-                                  vertical: 2, horizontal: 2),
-                              child: const Text(
-                                "REC",
-                                style: TextStyle(
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.bold,
-                                  letterSpacing: 1.0,
-                                  color: Colors.white,
-                                ),
-                              ),
-                            )
-                          ],
-                        ),
+                  Column(
+                    children: [
+                      BlocBuilder<QuestionPartCubit, QuestionPartState>(
+                        builder: (context, questionPartState) {
+                          if (kIsWeb){
+                            return Container();
+                          }
+                          else if (questionPartState is! FullQueState) {
+                            return Container(
+                              height: constraints.maxHeight * 0.16,
+                            );
+                          }
+                          else{
+                            return Container(
+                              height: constraints.maxHeight * 0.3,
+                            );
+                          }
+                        },
                       ),
-                    ),
-                  ),
-
-                  /* for timer 👇 */
-                  Align(
-                    alignment: Alignment.topRight,
-                    child: FittedBox(
-                        child: Padding(
-                      padding: const EdgeInsets.only(right: 12, top: 8),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Container(
-                            decoration: const BoxDecoration(
-                              color: Colors.black26,
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(4.0)),
-                            ),
-                            padding: const EdgeInsets.symmetric(
-                                vertical: 2, horizontal: 5),
-                            child: Text(
-                              "${min.toString().padLeft(2, '0')} : ${sec.toString().padLeft(2, '0')}",
-                              style: const TextStyle(
-                                fontSize: 12,
-                                fontWeight: FontWeight.bold,
-                                letterSpacing: 1.0,
-                                color: Colors.white,
+                          /* for recording inProgress Icon 👇 */
+                          Padding(
+                            padding: const EdgeInsets.only(top: 12.0, left: 8),
+                            child: FittedBox(
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  const Icon(
+                                    Icons.circle,
+                                    color: Colors.red,
+                                    size: 16.0,
+                                  ),
+                                  const SizedBox(
+                                    width: 5,
+                                  ),
+                                  Container(
+                                    decoration: const BoxDecoration(
+                                      color: Colors.black26,
+                                      borderRadius: BorderRadius.all(
+                                          Radius.circular(4.0)),
+                                    ),
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 2, horizontal: 2),
+                                    child: const Text(
+                                      "REC",
+                                      style: TextStyle(
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.bold,
+                                        letterSpacing: 1.0,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  )
+                                ],
                               ),
                             ),
-                          )
+                          ),
+                          /* for timer 👇 */
+                          FittedBox(
+                              child: Padding(
+                            padding: const EdgeInsets.only(right: 12, top: 8),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                Container(
+                                  decoration: const BoxDecoration(
+                                    color: Colors.black26,
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(4.0)),
+                                  ),
+                                  padding: const EdgeInsets.symmetric(
+                                      vertical: 2, horizontal: 5),
+                                  child: Text(
+                                    "${min.toString().padLeft(2, '0')} : ${sec.toString().padLeft(2, '0')}",
+                                    style: const TextStyle(
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.bold,
+                                      letterSpacing: 1.0,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                )
+                              ],
+                            ),
+                          ))
                         ],
                       ),
-                    )),
+                    ],
                   )
                 ],
               ],
@@ -225,11 +240,9 @@ class _ResponsePageCameraScreenState extends State<ResponsePageCameraScreen>
       listener: (context, state) {
         print("--$state");
         if (state is RecordingCompletedState) {
-          Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const NextPage(),
-              ));
+          Navigator.of(context).pushReplacementNamed(
+            '/nextPage',
+          );
           // context.read<RecordResponseBloc>().add(DisposeCameraEvent());
         }
       },

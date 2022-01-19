@@ -5,6 +5,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'bloc/question_part_cubit.dart';
+
 class RecordResponsePage extends StatefulWidget {
   const RecordResponsePage({Key? key}) : super(key: key);
 
@@ -51,11 +53,18 @@ class _RecordResponsePageState extends State<RecordResponsePage>
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: AppBar(
-          title: const Text("Record Response Page"),
-        ),
-        body: kIsWeb ? _webLayout() : _mobileLayout());
+    return
+      // MultiBlocProvider(
+      // providers: [
+      //   BlocProvider<RecordResponseBloc>(
+      //       create: (BuildContext context) => RecordResponseBloc()),
+      //   BlocProvider<QuestionPartCubit>(
+      //       create: (BuildContext context) => QuestionPartCubit()),
+      // ],
+      // child:
+      Scaffold(
+          body: kIsWeb ? _webLayout() : _mobileLayout());
+    // );
   }
 
   Widget _webLayout() {
@@ -64,18 +73,19 @@ class _RecordResponsePageState extends State<RecordResponsePage>
       var maxWidth = constraints.maxWidth;
       if (maxHeight > 450 && maxWidth > 650) {
         return Container(
+          color: Colors.black12,
           alignment: Alignment.topCenter,
           padding: const EdgeInsets.only(top: 20),
           child: Column(
             children: [
-              Container(
-                height: maxHeight * 0.6,
+              SizedBox(
+                height: maxHeight * 0.7,
                 width: maxWidth * 0.6,
                 child: ResponsePageCameraScreen(),
               ),
-              Container(
-                  color: Colors.black12,
-                  // height: maxHeight * 0.2,
+              SizedBox(
+                // color: Colors.black12,
+                  height: maxHeight * 0.2,
                   width: maxWidth * 0.6,
                   child: const QuestionPart()),
             ],
@@ -92,7 +102,7 @@ class _RecordResponsePageState extends State<RecordResponsePage>
                       padding: const EdgeInsets.only(top: 20),
                       child: Column(
                         children: [
-                          Container(
+                          SizedBox(
                             height: 300,
                             width: 400,
                             child: ResponsePageCameraScreen(),
@@ -116,13 +126,8 @@ class _RecordResponsePageState extends State<RecordResponsePage>
       // return ResponsePageCameraScreen();
       return Stack(
         children: [
-          Container(
-            child: ResponsePageCameraScreen(),
-          ),
-          Container(
-            child: const QuestionPart(),
-            color: Colors.white,
-          ),
+          ResponsePageCameraScreen(),
+          const QuestionPart(),
         ],
       );
     });

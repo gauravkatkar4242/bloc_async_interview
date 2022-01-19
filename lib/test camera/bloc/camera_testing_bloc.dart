@@ -94,6 +94,7 @@ Future<void> _initCamera(InitCameraEvent event, Emitter<CameraTestingState> emit
       emit(ErrorInCameraState(_controller));
       return;
     }
+    emit(RecordingCompletedState(_controller));
     if (file != null) {
       // file.saveTo("abd.mp4");
       // logic for saving and uploading video
@@ -118,6 +119,7 @@ Future<void> _initCamera(InitCameraEvent event, Emitter<CameraTestingState> emit
   }
 
   Future<void> _disposeCamera(DisposeCameraEvent event, Emitter<CameraTestingState> emit) async {
+    emit(const CameraDisposedState(null));
 
     if (_controller != null) {
       await _controller?.dispose();
@@ -125,7 +127,6 @@ Future<void> _initCamera(InitCameraEvent event, Emitter<CameraTestingState> emit
       print("Camera Disposed");
     }
     _tickerSubscription?.cancel();
-    emit(const CameraDisposedState(null));
 
   }
 }

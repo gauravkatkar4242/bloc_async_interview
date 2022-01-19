@@ -233,14 +233,12 @@ class _TestingPageCameraScreenState extends State<TestingPageCameraScreen> {
       },
       listener: (context, state) {
         print("--- Current State :- $state ---");
-        // if (state is RecordingCompletedState) {
-        //   Navigator.pushReplacement(
-        //       context,
-        //       MaterialPageRoute(
-        //         builder: (context) => const NextPage1(),
-        //       ));
-        //   // context.read<CameraTestingBloc>().add(DisposeCameraEvent());
-        // }
+        if (state is RecordingCompletedState) {
+          Navigator.of(context).pushReplacementNamed(
+            '/cameraTestCompletedPage',
+          );
+          // context.read<CameraTestingBloc>().add(DisposeCameraEvent());
+        }
       },
     );
   }

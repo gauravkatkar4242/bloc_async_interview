@@ -39,6 +39,7 @@ dependencies:
   flutter_bloc: ^8.0.0
   camera: ^0.9.4+5
   camera_web: ^0.2.1+1
+  video_player: ^2.2.11
 
 dev_dependencies:
   flutter_test:

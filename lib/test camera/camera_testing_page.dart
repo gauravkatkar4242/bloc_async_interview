@@ -1,4 +1,3 @@
-import 'package:bloc_async_interview/next_page.dart';
 import 'package:bloc_async_interview/test%20camera/bloc/camera_testing_bloc.dart';
 import 'package:bloc_async_interview/test%20camera/testing_page_camera_screen.dart';
 import 'package:flutter/cupertino.dart';
@@ -13,14 +12,14 @@ class CameraTestingPage extends StatefulWidget {
   _CameraTestingPageState createState() => _CameraTestingPageState();
 }
 
-class _CameraTestingPageState extends State<CameraTestingPage> with WidgetsBindingObserver {
-
-
+class _CameraTestingPageState extends State<CameraTestingPage>
+    with WidgetsBindingObserver {
   var cameraBloc;
 
   @override
   void didChangeDependencies() {
-    cameraBloc = BlocProvider.of<CameraTestingBloc>(context) /*...cameraBloc.add(InitializingControllerEvent())*/;
+    cameraBloc = BlocProvider.of<CameraTestingBloc>(
+        context) /*...cameraBloc.add(InitializingControllerEvent())*/;
     cameraBloc.add(InitCameraEvent());
     WidgetsBinding.instance!.addObserver(this);
     super.didChangeDependencies();
@@ -43,7 +42,7 @@ class _CameraTestingPageState extends State<CameraTestingPage> with WidgetsBindi
       // Reinitialize the camera with same properties
       print("------------------AppLifecycleState.resumed--------------------");
       context.read<CameraTestingBloc>().add(InitCameraEvent());
-    }else if (state == AppLifecycleState.paused) {
+    } else if (state == AppLifecycleState.paused) {
       // Reinitialize the camera with same properties
       print("------------------AppLifecycleState.paused--------------------");
       context.read<CameraTestingBloc>().add(DisposeCameraEvent());
@@ -52,18 +51,27 @@ class _CameraTestingPageState extends State<CameraTestingPage> with WidgetsBindi
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: AppBar(
-          title: const Text("Testing Page"),
-        ),
-        body: kIsWeb ? _webLayout() : _mobileLayout());
+    return
+        // MultiBlocProvider(
+        //   providers: [
+        //     BlocProvider<CameraTestingBloc>(
+        //       create: (BuildContext context) => CameraTestingBloc(),
+        //     ),
+        //   ],
+        //   child:
+        Scaffold(
+            appBar: AppBar(
+              title: const Text("Testing Page"),
+            ),
+            body: kIsWeb ? _webLayout() : _mobileLayout());
+    // );
   }
 
   Widget _webLayout() {
-      return LayoutBuilder(
-        builder: (context, constraints) {
-          var maxHeight = constraints.maxHeight;
-          var maxWidth = constraints.maxWidth;
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        var maxHeight = constraints.maxHeight;
+        var maxWidth = constraints.maxWidth;
         if (maxHeight > 500 && maxWidth > 600) {
           // resize the content
           return Container(
@@ -73,10 +81,9 @@ class _CameraTestingPageState extends State<CameraTestingPage> with WidgetsBindi
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 SizedBox(
-                  height: maxHeight * 0.7,
-                  width: maxWidth * 0.6,
-                  child: TestingPageCameraScreen()
-                ),
+                    height: maxHeight * 0.7,
+                    width: maxWidth * 0.6,
+                    child: TestingPageCameraScreen()),
                 SizedBox(
                   // height: maxHeight * 0.3,
                   width: maxWidth * 0.25,
@@ -94,10 +101,9 @@ class _CameraTestingPageState extends State<CameraTestingPage> with WidgetsBindi
                 child: Row(
                   children: [
                     SizedBox(
-                      height: 300,
-                      width: 300,
-                      child:  TestingPageCameraScreen()
-                    ),
+                        height: 300,
+                        width: 300,
+                        child: TestingPageCameraScreen()),
                     const SizedBox(
                       width: 10,
                     ),
@@ -128,9 +134,7 @@ class _CameraTestingPageState extends State<CameraTestingPage> with WidgetsBindi
                 padding: const EdgeInsets.symmetric(vertical: 10),
                 width: maxWidth * 0.9,
                 child: _textContent()),
-            Expanded(
-              child:  TestingPageCameraScreen()
-            )
+            Expanded(child: TestingPageCameraScreen())
           ],
         ),
       );
@@ -160,6 +164,7 @@ class _CameraTestingPageState extends State<CameraTestingPage> with WidgetsBindi
             style: TextStyle(
                 color: Colors.black, fontWeight: FontWeight.bold, fontSize: 16),
           ),
+
           if (kIsWeb) ...{
             const Divider(
               color: Colors.black54,
@@ -171,10 +176,13 @@ class _CameraTestingPageState extends State<CameraTestingPage> with WidgetsBindi
               textAlign: TextAlign.left,
               style: TextStyle(color: Colors.black54, fontSize: 12),
             ),
-            SizedBox(
-              height: 20,
+            const SizedBox(
+              height: kIsWeb ? 20 : 10,
             ),
             ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                primary: Colors.white10,
+              ), // set the background color
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: const [
@@ -183,13 +191,11 @@ class _CameraTestingPageState extends State<CameraTestingPage> with WidgetsBindi
                 ],
               ),
               onPressed: () {
-                Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const NextPage(),
-                    ));
+                // Navigator.of(context).pushReplacementNamed(
+                //   '/nextPage',
+                // );
               },
-            )
+            ),
           }
         ],
       ),
