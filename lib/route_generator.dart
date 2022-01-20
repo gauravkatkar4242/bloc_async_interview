@@ -1,28 +1,47 @@
 import 'package:bloc_async_interview/camera%20test%20completed/camera_test_completed_page.dart';
 import 'package:bloc_async_interview/home_page.dart';
+import 'package:bloc_async_interview/record%20reponse/bloc/question_part_cubit.dart';
+import 'package:bloc_async_interview/record%20reponse/bloc/record_response_bloc.dart';
 import 'package:bloc_async_interview/record%20reponse/record_response_page.dart';
+import 'package:bloc_async_interview/screen%20size/screen_size_cubit.dart';
+import 'package:bloc_async_interview/test%20camera/bloc/camera_testing_bloc.dart';
 import 'package:bloc_async_interview/test%20camera/camera_testing_page.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'next_page.dart';
 
 class RouteGenerator {
   static Route<dynamic> generateRoute(RouteSettings settings) {
     // Getting arguments passed in while calling Navigator.pushNamed
-    final args = settings.arguments;
+    // final args = settings.arguments;
 
     switch (settings.name) {
       case '/':
-        return MaterialPageRoute(builder: (_) => const HomePage());
+        return MaterialPageRoute(
+            builder: (_) => BlocProvider<ScreenSizeCubit>(
+                  create: (BuildContext context) => ScreenSizeCubit(),
+                  child: const HomePage(),
+                ));
+
       case '/cameraTestingPage':
         return MaterialPageRoute(
-          builder: (_) => const CameraTestingPage(),
-        );
+            builder: (_) => BlocProvider<CameraTestingBloc>(
+                  create: (BuildContext context) => CameraTestingBloc(),
+                  child: const CameraTestingPage(),
+                ));
 
       case '/recordResponsePage':
         return MaterialPageRoute(
-          builder: (_) => const RecordResponsePage(),
-        );
+            builder: (_) => MultiBlocProvider(
+                  providers: [
+                    BlocProvider<RecordResponseBloc>(
+                        create: (BuildContext context) => RecordResponseBloc()),
+                    BlocProvider<QuestionPartCubit>(
+                        create: (BuildContext context) => QuestionPartCubit()),
+                  ],
+                  child: const RecordResponsePage(),
+                ));
 
       case '/nextPage':
         return MaterialPageRoute(
