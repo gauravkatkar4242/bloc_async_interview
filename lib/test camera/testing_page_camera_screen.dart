@@ -71,11 +71,7 @@ class _TestingPageCameraScreenState extends State<TestingPageCameraScreen> {
                                     .state.cameraController!.value.aspectRatio *
                                 (constraints.maxWidth / constraints.maxHeight)),
                         alignment: Alignment.topCenter,
-                        child: Column(
-                          children: [
-                            CameraPreview(cameraBloc.state.cameraController!),
-                          ],
-                        ),
+                        child: CameraPreview(cameraBloc.state.cameraController!),
                       ),
                 if (state is CameraReadyState) ...[
                   /* for Start recording Button 👇*/

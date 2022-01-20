@@ -6,25 +6,22 @@ class CameraTestCompletedPage extends StatefulWidget {
   const CameraTestCompletedPage({Key? key}) : super(key: key);
 
   @override
-  _CameraTestCompletedPageState createState() => _CameraTestCompletedPageState();
+  _CameraTestCompletedPageState createState() =>
+      _CameraTestCompletedPageState();
 }
 
 class _CameraTestCompletedPageState extends State<CameraTestCompletedPage> {
   @override
   Widget build(BuildContext context) {
     return
-      // MultiBlocProvider(
-      //   providers: [
-      //     BlocProvider<CameraTestingBloc>(
-      //       create: (BuildContext context) => CameraTestingBloc(),
-      //     ),
-      //   ],
-      //   child:
-      Scaffold(
-          appBar: AppBar(
-            title: const Text("Testing Page"),
-          ),
-          body: kIsWeb ? _webLayout() : _mobileLayout());
+        // MultiBlocProvider(
+        //   providers: [
+        //     BlocProvider<CameraTestingBloc>(
+        //       create: (BuildContext context) => CameraTestingBloc(),
+        //     ),
+        //   ],
+        //   child:
+        Scaffold(body: kIsWeb ? _webLayout() : _mobileLayout());
     // );
   }
 
@@ -45,7 +42,8 @@ class _CameraTestCompletedPageState extends State<CameraTestCompletedPage> {
                     color: Colors.blueGrey,
                     height: maxHeight * 0.7,
                     width: maxWidth * 0.6,
-                    child: Center(child: const Text("Video will be played here"))),
+                    child:
+                        Center(child: const Text("Video will be played here"))),
                 SizedBox(
                   // height: maxHeight * 0.3,
                   width: maxWidth * 0.25,
@@ -62,7 +60,7 @@ class _CameraTestCompletedPageState extends State<CameraTestCompletedPage> {
                 scrollDirection: Axis.vertical,
                 child: Row(
                   children: [
-                     Container(
+                    Container(
                         color: Colors.blueGrey,
                         height: 300,
                         width: 300,
@@ -87,17 +85,29 @@ class _CameraTestCompletedPageState extends State<CameraTestCompletedPage> {
 
   Widget _mobileLayout() {
     return LayoutBuilder(builder: (context, constraints) {
-      var maxHeight = constraints.maxHeight;
+      // var maxHeight = constraints.maxHeight;
       var maxWidth = constraints.maxWidth;
       return Container(
+        color: Colors.black,
         alignment: Alignment.center,
         child: Column(
           children: [
+             Expanded(
+              child: Container(
+                color: Colors.blueGrey,
+                child: const Center(
+                  //video player will be here
+                  child: Text(
+                    "Video will be played here",
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ),
+              ),
+            ),
             Container(
                 padding: const EdgeInsets.symmetric(vertical: 10),
                 width: maxWidth * 0.9,
                 child: _textContent()),
-            const Expanded(child: Center(child: Text("Video will be played here")))
           ],
         ),
       );
@@ -115,10 +125,9 @@ class _CameraTestCompletedPageState extends State<CameraTestCompletedPage> {
             "Test your camera & microphone",
             textAlign: TextAlign.left,
             style: TextStyle(
-              color: Colors.black,
-              fontWeight: FontWeight.bold,
-              fontSize: 16
-            ),
+                color: kIsWeb ? Colors.black : Colors.white,
+                fontWeight: FontWeight.bold,
+                fontSize: 16),
           ),
           const SizedBox(
             height: 8,
@@ -127,9 +136,8 @@ class _CameraTestCompletedPageState extends State<CameraTestCompletedPage> {
             "Play the video to check your audio & video quality. If you face any issues with your microphone/camera, then switch to a different device or contact your administrator.",
             textAlign: TextAlign.left,
             style: TextStyle(
-                color: Colors.black, fontSize: 14),
+                color: kIsWeb ? Colors.black : Colors.white, fontSize: 14),
           ),
-          // if (!kIsWeb) ...{
           const Divider(
             color: Colors.black54,
             thickness: 0.5,
@@ -138,14 +146,16 @@ class _CameraTestCompletedPageState extends State<CameraTestCompletedPage> {
           const Text(
             "If everything is good to go, then move ahead. ",
             textAlign: TextAlign.left,
-            style: TextStyle(color: Colors.black54, fontSize: 12),
+            style: TextStyle(
+                color: kIsWeb ? Colors.black54 : Colors.white, fontSize: 12),
           ),
           const SizedBox(
             height: kIsWeb ? 20 : 10,
           ),
           ElevatedButton(
             child: Row(
-              mainAxisSize: MainAxisSize.min,
+              mainAxisSize: kIsWeb ? MainAxisSize.min : MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.center,
               children: const [
                 Text("Go Next "),
                 Icon(Icons.arrow_forward, size: 15)
@@ -157,7 +167,6 @@ class _CameraTestCompletedPageState extends State<CameraTestCompletedPage> {
               );
             },
           )
-          // }
         ],
       ),
     );

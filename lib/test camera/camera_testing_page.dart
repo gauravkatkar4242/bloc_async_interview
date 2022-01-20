@@ -60,9 +60,7 @@ class _CameraTestingPageState extends State<CameraTestingPage>
         //   ],
         //   child:
         Scaffold(
-            appBar: AppBar(
-              title: const Text("Testing Page"),
-            ),
+
             body: kIsWeb ? _webLayout() : _mobileLayout());
     // );
   }
@@ -124,7 +122,7 @@ class _CameraTestingPageState extends State<CameraTestingPage>
 
   Widget _mobileLayout() {
     return LayoutBuilder(builder: (context, constraints) {
-      var maxHeight = constraints.maxHeight;
+      // var maxHeight = constraints.maxHeight;
       var maxWidth = constraints.maxWidth;
       return Container(
         alignment: Alignment.center,
