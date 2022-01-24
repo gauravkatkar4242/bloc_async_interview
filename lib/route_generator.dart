@@ -1,8 +1,8 @@
 import 'package:bloc_async_interview/camera%20test%20completed/camera_test_completed_page.dart';
 import 'package:bloc_async_interview/home_page.dart';
-import 'package:bloc_async_interview/record%20reponse/bloc/question_part_cubit.dart';
-import 'package:bloc_async_interview/record%20reponse/bloc/record_response_bloc.dart';
-import 'package:bloc_async_interview/record%20reponse/record_response_page.dart';
+import 'package:bloc_async_interview/record%20response/bloc/question_part_cubit.dart';
+import 'package:bloc_async_interview/record%20response/bloc/record_response_bloc.dart';
+import 'package:bloc_async_interview/record%20response/record_response_page.dart';
 import 'package:bloc_async_interview/screen%20size/screen_size_cubit.dart';
 import 'package:bloc_async_interview/test%20camera/bloc/camera_testing_bloc.dart';
 import 'package:bloc_async_interview/test%20camera/camera_testing_page.dart';

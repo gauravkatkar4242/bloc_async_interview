@@ -2,9 +2,9 @@ part of 'camera_testing_bloc.dart';
 
 abstract class CameraTestingEvent extends Equatable {
   const CameraTestingEvent();
-  @override
-  List<Object?> get props =>[];
 
+  @override
+  List<Object?> get props => [];
 }
 
 class InitCameraEvent extends CameraTestingEvent{}

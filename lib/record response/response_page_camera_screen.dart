@@ -1,5 +1,5 @@
-import 'package:bloc_async_interview/record%20reponse/bloc/question_part_cubit.dart';
-import 'package:bloc_async_interview/record%20reponse/bloc/record_response_bloc.dart';
+import 'package:bloc_async_interview/record%20response/bloc/question_part_cubit.dart';
+import 'package:bloc_async_interview/record%20response/bloc/record_response_bloc.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -16,7 +16,6 @@ class ResponsePageCameraScreen extends StatefulWidget
 
 class _ResponsePageCameraScreenState extends State<ResponsePageCameraScreen>
     with WidgetsBindingObserver {
-  // @override
   @override
   Widget build(BuildContext context) {
     var cameraBloc = BlocProvider.of<RecordResponseBloc>(context);
@@ -36,22 +35,22 @@ class _ResponsePageCameraScreenState extends State<ResponsePageCameraScreen>
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
+                  const Text("Issue in camera"),
                   const Text(
-                      "Video Recording Failed - Camera Exception Occurred "),
-                  const Text("Press Button to ReRecord"),
+                      "Try closing all cameras and Press Button to Retry"),
                   IconButton(
                       onPressed: () => context
                           .read<RecordResponseBloc>()
                           .add(InitCameraEvent()),
-                      icon: const Icon(Icons.reset_tv_rounded))
+                      icon: const Icon(Icons.refresh))
                 ],
               ),
             ),
           );
         } else {
           return LayoutBuilder(builder: (context, constraints) {
-            int timer = context
-                .select((RecordResponseBloc bloc) => bloc.state.timeElapsed);
+            int timer = state.timeElapsed;
+            // context.select((RecordResponseBloc bloc) => bloc.state.timeElapsed);
             int min = (timer / 60).floor();
             int sec = (timer % 60);
             return Stack(
@@ -76,8 +75,6 @@ class _ResponsePageCameraScreenState extends State<ResponsePageCameraScreen>
                         child:
                             CameraPreview(cameraBloc.state.cameraController!),
                       ),
-                // QuestionPart(),
-
                 if (state is ReverseCountDownInProgressState) ...[
                   /* for Timer before Starting Rec👇 */
                   Align(
@@ -93,7 +90,7 @@ class _ResponsePageCameraScreenState extends State<ResponsePageCameraScreen>
                           ),
                         ),
                         Text(
-                          timer.abs().toString(),
+                          state.timeElapsed.abs().toString(),
                           style: const TextStyle(
                             fontSize: 75,
                             fontWeight: FontWeight.bold,
@@ -143,15 +140,13 @@ class _ResponsePageCameraScreenState extends State<ResponsePageCameraScreen>
                     children: [
                       BlocBuilder<QuestionPartCubit, QuestionPartState>(
                         builder: (context, questionPartState) {
-                          if (kIsWeb){
+                          if (kIsWeb) {
                             return Container();
-                          }
-                          else if (questionPartState is! FullQueState) {
+                          } else if (questionPartState is! FullQueState) {
                             return Container(
                               height: constraints.maxHeight * 0.16,
                             );
-                          }
-                          else{
+                          } else {
                             return Container(
                               height: constraints.maxHeight * 0.3,
                             );
@@ -238,12 +233,13 @@ class _ResponsePageCameraScreenState extends State<ResponsePageCameraScreen>
         }
       },
       listener: (context, state) {
-        print("--$state");
+        debugPrint("--$state");
         if (state is RecordingCompletedState) {
           Navigator.of(context).pushReplacementNamed(
             '/nextPage',
           );
-          // context.read<RecordResponseBloc>().add(DisposeCameraEvent());
+          // context.read<RecordResponseBloc>().add(DisposeCameraEvent()); // need to dispose camera manually if only PUSH NAMED used
+
         }
       },
     );

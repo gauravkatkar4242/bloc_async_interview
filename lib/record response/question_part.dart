@@ -1,7 +1,4 @@
-import 'dart:ui';
-
-import 'package:bloc_async_interview/record%20reponse/bloc/question_part_cubit.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:bloc_async_interview/record%20response/bloc/question_part_cubit.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -11,8 +8,6 @@ class QuestionPart extends StatefulWidget {
   const QuestionPart({Key? key}) : super(key: key);
   final int index = 1;
 
-  // final int index = 0;
-
   @override
   _QuestionPartState createState() => _QuestionPartState();
 }
@@ -20,6 +15,7 @@ class QuestionPart extends StatefulWidget {
 class _QuestionPartState extends State<QuestionPart> {
   @override
   void initState() {
+    //For full screen in mobile
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: []);
     super.initState();
   }
@@ -27,6 +23,7 @@ class _QuestionPartState extends State<QuestionPart> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
+    //for splitting the que into firsthalf and secondhalf
     context.read<QuestionPartCubit>().splitQue();
   }
 
@@ -36,21 +33,26 @@ class _QuestionPartState extends State<QuestionPart> {
     return BlocBuilder<QuestionPartCubit, QuestionPartState>(
       builder: (context, state) {
         int totalQuestions = 5;
-        String firstHalf =
-            context.select((QuestionPartCubit bloc) => bloc.state.firstHalf);
-        String secondHalf =
-            context.select((QuestionPartCubit bloc) => bloc.state.secondHalf);
+        String firstHalf = state.firstHalf;
+        String secondHalf = state.secondHalf;
         if (state is QuestionPartInitial) {
           return const CircularProgressIndicator();
         }
         return SizedBox(
-          height: kIsWeb ? (state is! FullQueState)? height * 0.2 : height * 0.3 : state is! FullQueState? height * 0.16 : height * 0.3,
-
+          height: kIsWeb
+              ? (state is! FullQueState)
+                  ? height * 0.2
+                  : height * 0.3
+              : state is! FullQueState
+                  ? height * 0.16
+                  : height * 0.3,
           child: SingleChildScrollView(
             scrollDirection: Axis.vertical,
             child: Container(
               color: kIsWeb ? Colors.white : Colors.black,
-              padding: kIsWeb ? const EdgeInsets.all(20) : const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+              padding: kIsWeb
+                  ? const EdgeInsets.all(20)
+                  : const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -65,6 +67,7 @@ class _QuestionPartState extends State<QuestionPart> {
                     height: kIsWeb ? 10 : 5,
                   ),
                   if (state is ShortQueState) ...{
+                    // if there is no need to split question
                     Text(
                       firstHalf,
                       style: const TextStyle(
@@ -94,7 +97,9 @@ class _QuestionPartState extends State<QuestionPart> {
                                   fontWeight: FontWeight.bold),
                             ),
                             onPressed: () {
-                              context.read<QuestionPartCubit>().showFullQuestion();
+                              context
+                                  .read<QuestionPartCubit>()
+                                  .showFullQuestion();
                             },
                           ),
                         ),
@@ -106,7 +111,6 @@ class _QuestionPartState extends State<QuestionPart> {
                       children: <Widget>[
                         Text(
                           (firstHalf + secondHalf),
-                          // textAlign: TextAlign.left,
                           style: const TextStyle(
                               color: kIsWeb ? Colors.black : Colors.white,
                               fontSize: 16),
@@ -124,7 +128,9 @@ class _QuestionPartState extends State<QuestionPart> {
                                   fontWeight: FontWeight.bold),
                             ),
                             onPressed: () {
-                              context.read<QuestionPartCubit>().showHalfQuestion();
+                              context
+                                  .read<QuestionPartCubit>()
+                                  .showHalfQuestion();
                             },
                           ),
                         ),

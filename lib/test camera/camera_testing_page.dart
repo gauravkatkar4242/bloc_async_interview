@@ -1,6 +1,5 @@
 import 'package:bloc_async_interview/test%20camera/bloc/camera_testing_bloc.dart';
 import 'package:bloc_async_interview/test%20camera/testing_page_camera_screen.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -14,13 +13,11 @@ class CameraTestingPage extends StatefulWidget {
 
 class _CameraTestingPageState extends State<CameraTestingPage>
     with WidgetsBindingObserver {
-  var cameraBloc;
+  var bloc;
 
   @override
   void didChangeDependencies() {
-    cameraBloc = BlocProvider.of<CameraTestingBloc>(
-        context) /*...cameraBloc.add(InitializingControllerEvent())*/;
-    cameraBloc.add(InitCameraEvent());
+    bloc = context.read<CameraTestingBloc>()..add(InitCameraEvent());
     WidgetsBinding.instance!.addObserver(this);
     super.didChangeDependencies();
   }
@@ -28,7 +25,7 @@ class _CameraTestingPageState extends State<CameraTestingPage>
   @override
   void dispose() {
     WidgetsBinding.instance!.removeObserver(this);
-    cameraBloc.add(DisposeCameraEvent());
+    bloc.add(DisposeCameraEvent());
     super.dispose();
   }
 
@@ -37,32 +34,24 @@ class _CameraTestingPageState extends State<CameraTestingPage>
     if (state == AppLifecycleState.inactive) {
       context.read<CameraTestingBloc>().add(DisposeCameraEvent());
       // Free up memory when camera not active
-      print("------------------AppLifecycleState.inactive--------------------");
+      debugPrint(
+          "------------------AppLifecycleState.inactive--------------------");
     } else if (state == AppLifecycleState.resumed) {
       // Reinitialize the camera with same properties
-      print("------------------AppLifecycleState.resumed--------------------");
+      debugPrint(
+          "------------------AppLifecycleState.resumed--------------------");
       context.read<CameraTestingBloc>().add(InitCameraEvent());
     } else if (state == AppLifecycleState.paused) {
       // Reinitialize the camera with same properties
-      print("------------------AppLifecycleState.paused--------------------");
+      debugPrint(
+          "------------------AppLifecycleState.paused--------------------");
       context.read<CameraTestingBloc>().add(DisposeCameraEvent());
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return
-        // MultiBlocProvider(
-        //   providers: [
-        //     BlocProvider<CameraTestingBloc>(
-        //       create: (BuildContext context) => CameraTestingBloc(),
-        //     ),
-        //   ],
-        //   child:
-        Scaffold(
-
-            body: kIsWeb ? _webLayout() : _mobileLayout());
-    // );
+    return SafeArea(child: Scaffold(body: kIsWeb ? _webLayout() : _mobileLayout()));
   }
 
   Widget _webLayout() {
@@ -162,7 +151,6 @@ class _CameraTestingPageState extends State<CameraTestingPage>
             style: TextStyle(
                 color: Colors.black, fontWeight: FontWeight.bold, fontSize: 16),
           ),
-
           if (kIsWeb) ...{
             const Divider(
               color: Colors.black54,

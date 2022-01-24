@@ -3,16 +3,19 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:camera/camera.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter/cupertino.dart';
 
 import '../../timer.dart';
 
 part 'record_response_event.dart';
+
 part 'record_response_state.dart';
 
-class RecordResponseBloc extends Bloc<RecordResponseEvent, RecordResponseState> {
-
-
+class RecordResponseBloc
+    extends Bloc<RecordResponseEvent, RecordResponseState> {
   CameraController? _controller;
+
+  // for timer Subscription
   final CountDownTimer _ticker = const CountDownTimer();
   StreamSubscription<int>? _tickerSubscription;
 
@@ -22,14 +25,14 @@ class RecordResponseBloc extends Bloc<RecordResponseEvent, RecordResponseState> 
     on<StartRecordingEvent>(_startRecording);
     on<StopRecordingEvent>(_getRecordedVideo);
     on<DisposeCameraEvent>(_disposeCamera);
-
-
   }
 
-  Future<void> _initCamera(InitCameraEvent event, Emitter<RecordResponseState> emit) async {
-    print("--- Event :- _initCamera :: Current State :- $state");
+  Future<void> _initCamera(
+      InitCameraEvent event, Emitter<RecordResponseState> emit) async {
+    debugPrint("--- Event :- _initCamera :: Current State :- $state");
     try {
-      var cameraList = await availableCameras(); // gets all available cameras from device
+      var cameraList =
+          await availableCameras(); // gets all available cameras from device
 
       if (_controller != null) {
         _tickerSubscription?.cancel();
@@ -56,91 +59,83 @@ class RecordResponseBloc extends Bloc<RecordResponseEvent, RecordResponseState> 
       _tickerSubscription = _ticker
           .tick(ticks: -3)
           .listen((duration) => add(TimerTickedEvent(duration: duration)));
-
     } on CameraException catch (e) {
       emit(const ErrorInCameraState(null));
     }
-
   }
 
   void _timerTicked(TimerTickedEvent event, Emitter<RecordResponseState> emit) {
-    print("_onTicked ${event.duration}");
+    debugPrint("_onTicked ${event.duration}");
 
     if (event.duration < 0) {
-      // emit(CameraReadyState(_controller));
+      // if timer is -3, -2, -1, emit ReverseCountDownInProgressState state
       emit(ReverseCountDownInProgressState(_controller, event.duration));
     } else if (event.duration == 0) {
+      // when timer is 0 start the recording
       add(StartRecordingEvent());
-      // emit(RecordingInProgressState(_controller));
     } else if (event.duration >= 1000) {
+      // for auto-stop recording... here it will stop recording after 1000 secs
       add(StopRecordingEvent());
     } else {
+      // else emit recording RecordingInProgressState
       emit(RecordingInProgressState(_controller, event.duration));
     }
   }
 
-  Future<void> _startRecording(StartRecordingEvent event, Emitter<RecordResponseState> emit) async {
-    print("--- Event :- _startRecording :: CurrentState :- $state");
+  Future<void> _startRecording(
+      StartRecordingEvent event, Emitter<RecordResponseState> emit) async {
+    debugPrint("--- Event :- _startRecording :: CurrentState :- $state");
 
     if (_controller == null || _controller!.value.isRecordingVideo) {
       return;
     }
     try {
       await _controller!.startVideoRecording();
-
       emit(RecordingInProgressState(_controller, 0));
-
-      _tickerSubscription?.cancel();
-      _tickerSubscription = _ticker
-          .tick(ticks: 0)
-          .listen((duration) => add(TimerTickedEvent(duration: duration)));
-
     } on CameraException catch (e) {
-      //will set state to CameraExceptionState state
+      //will set state to ErrorInCameraState state
       emit(ErrorInCameraState(_controller));
     }
   }
 
-
-  Future<void> _getRecordedVideo(StopRecordingEvent event, Emitter<RecordResponseState> emit) async {
+  Future<void> _getRecordedVideo(
+      StopRecordingEvent event, Emitter<RecordResponseState> emit) async {
     XFile? file = await _stoppedRecording();
     if (file == null) {
+      // if recorded file is null emit ErrorInCameraState
       emit(ErrorInCameraState(_controller));
       return;
-    }
-    if (file != null) {
+    } else {
       // file.saveTo("abd.mp4");
-      // logic for saving and uploading video
+      // logic for saving and uploading video will be here
     }
     emit(RecordingCompletedState(_controller));
   }
 
   Future<XFile?> _stoppedRecording() async {
     if (_controller == null || !_controller!.value.isRecordingVideo) {
-      //will set state to CameraExceptionState state - Null video
       return null;
     }
     try {
       XFile file = await _controller!.stopVideoRecording();
+      //to stop timer
       _tickerSubscription?.cancel();
-      print("--- Event :- _stoppedRecording :: CurrentState :- $state");
+      debugPrint("--- Event :- _stoppedRecording :: CurrentState :- $state");
       return file;
     } on CameraException catch (e) {
-      //will set state to CameraExceptionState state
+      //will set state to ErrorInCameraState state
       return null;
     }
   }
 
-  Future<void> _disposeCamera(DisposeCameraEvent event, Emitter<RecordResponseState> emit) async {
-
+  Future<void> _disposeCamera(
+      DisposeCameraEvent event, Emitter<RecordResponseState> emit) async {
     if (_controller != null) {
       await _controller?.dispose();
-      print("--- Event :- _disposeCamera :: CurrentState :- $state");
-      print("Camera Disposed");
+      debugPrint("--- Event :- _disposeCamera :: CurrentState :- $state");
+      debugPrint("Camera Disposed");
     }
     _tickerSubscription?.cancel();
     emit(const CameraDisposedState(null));
-
   }
-
 }

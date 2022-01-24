@@ -5,11 +5,9 @@ import 'package:flutter/foundation.dart';
 part 'question_part_state.dart';
 
 class QuestionPartCubit extends Cubit<QuestionPartState> {
-
   int totalQuestions = 5;
   String firstHalf = "";
   String secondHalf = "";
-  bool flag = true;
   int index = 1;
 
   final List<String> _questionList = [
@@ -19,18 +17,18 @@ class QuestionPartCubit extends Cubit<QuestionPartState> {
     "What is the difference between hard work and smart work?",
   ];
 
-  QuestionPartCubit() : super(QuestionPartInitial("",""));
+  QuestionPartCubit() : super(const QuestionPartInitial("", ""));
 
-  void splitQue(){
+  void splitQue() {
     if (_questionList[index].length > 65) {
       if (kIsWeb && _questionList[index].length > 200) {
         firstHalf = _questionList[index].substring(0, 200);
-        secondHalf = _questionList[index]
-            .substring(200, _questionList[index].length);
+        secondHalf =
+            _questionList[index].substring(200, _questionList[index].length);
       } else {
         firstHalf = _questionList[index].substring(0, 65);
-        secondHalf = _questionList[index]
-            .substring(65, _questionList[index].length);
+        secondHalf =
+            _questionList[index].substring(65, _questionList[index].length);
       }
     } else {
       firstHalf = _questionList[index];
@@ -41,13 +39,11 @@ class QuestionPartCubit extends Cubit<QuestionPartState> {
     emit(HalfQueState(firstHalf, secondHalf));
   }
 
-  void showHalfQuestion(){
+  void showHalfQuestion() {
     emit(HalfQueState(firstHalf, secondHalf));
   }
 
-  void showFullQuestion(){
+  void showFullQuestion() {
     emit(FullQueState(firstHalf, secondHalf));
   }
-
-
 }

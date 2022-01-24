@@ -4,7 +4,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-
 class TestingPageCameraScreen extends StatefulWidget
     with WidgetsBindingObserver {
   TestingPageCameraScreen({Key? key}) : super(key: key);
@@ -29,28 +28,29 @@ class _TestingPageCameraScreenState extends State<TestingPageCameraScreen> {
           );
         } else if (state is CameraDisposedState) {
           return const Center(
-            child: CircularProgressIndicator(color: Colors.red,),
+            child: CircularProgressIndicator(
+              color: Colors.red,
+            ),
           );
-        }
-         else if (state is ErrorInCameraState) {
+        } else if (state is ErrorInCameraState) {
           return Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Text("Issue in Camera", style: TextStyle(fontSize: 30),),
-                const Text("Press Button to Retry", style: TextStyle(fontSize: 30),),
-                ElevatedButton(
+                const Text("Issue in camera"),
+                const Text("Try closing all cameras and Press Button to Retry"),
+                IconButton(
                     onPressed: () => context
                         .read<CameraTestingBloc>()
                         .add(InitCameraEvent()),
-                    child: const Icon(Icons.reset_tv_rounded ,size: 30,))
+                    icon: const Icon(Icons.refresh))
               ],
             ),
           );
         } else {
           return LayoutBuilder(builder: (context, constraints) {
-            int timer = context.select(
-                (CameraTestingBloc bloc) => bloc.state.timeElapsed);
+            int timer = context
+                .select((CameraTestingBloc bloc) => bloc.state.timeElapsed);
             int min = (timer / 60).round();
             int sec = (timer % 60);
 
@@ -71,7 +71,8 @@ class _TestingPageCameraScreenState extends State<TestingPageCameraScreen> {
                                     .state.cameraController!.value.aspectRatio *
                                 (constraints.maxWidth / constraints.maxHeight)),
                         alignment: Alignment.topCenter,
-                        child: CameraPreview(cameraBloc.state.cameraController!),
+                        child:
+                            CameraPreview(cameraBloc.state.cameraController!),
                       ),
                 if (state is CameraReadyState) ...[
                   /* for Start recording Button 👇*/
@@ -228,16 +229,14 @@ class _TestingPageCameraScreenState extends State<TestingPageCameraScreen> {
         }
       },
       listener: (context, state) {
-        print("--- Current State :- $state ---");
+        debugPrint("--- Current State :- $state ---");
         if (state is RecordingCompletedState) {
           Navigator.of(context).pushReplacementNamed(
             '/cameraTestCompletedPage',
           );
-          // context.read<CameraTestingBloc>().add(DisposeCameraEvent());
+          // context.read<CameraTestingBloc>().add(DisposeCameraEvent()); // need to dispose camera if only PUSH NAMED used
         }
       },
     );
   }
-
-
 }

@@ -1,6 +1,4 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 
 class NextPage extends StatefulWidget {
   const NextPage({Key? key}) : super(key: key);
@@ -12,32 +10,32 @@ class NextPage extends StatefulWidget {
 class _NextPageState extends State<NextPage> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: LayoutBuilder(builder: (context, constraints) {
-        var maxHeight = constraints.maxHeight;
-        var maxWidth = constraints.maxWidth;
-        return Center(
-          child: Container(
-            constraints: BoxConstraints.expand(),
-            color: Colors.blueGrey,
-            child: Center(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  const Text("Question Will be displayed here"),
-                  ElevatedButton(
-                      onPressed: () {
-                        Navigator.of(context).pushNamed(
-                          '/recordResponsePage',
-                        );
-                      },
-                      child: const Text("Start Answering"))
-                ],
+    return SafeArea(
+      child: Scaffold(
+        body: LayoutBuilder(builder: (context, constraints) {
+          return Center(
+            child: Container(
+              constraints: const BoxConstraints.expand(),
+              color: Colors.blueGrey,
+              child: Center(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Text("Question Will be displayed here"),
+                    ElevatedButton(
+                        onPressed: () {
+                          Navigator.of(context).pushNamed(
+                            '/recordResponsePage',
+                          );
+                        },
+                        child: const Text("Start Answering"))
+                  ],
+                ),
               ),
             ),
-          ),
-        );
-      }),
+          );
+        }),
+      ),
     );
   }
 }

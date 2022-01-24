@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
@@ -13,16 +12,7 @@ class CameraTestCompletedPage extends StatefulWidget {
 class _CameraTestCompletedPageState extends State<CameraTestCompletedPage> {
   @override
   Widget build(BuildContext context) {
-    return
-        // MultiBlocProvider(
-        //   providers: [
-        //     BlocProvider<CameraTestingBloc>(
-        //       create: (BuildContext context) => CameraTestingBloc(),
-        //     ),
-        //   ],
-        //   child:
-        Scaffold(body: kIsWeb ? _webLayout() : _mobileLayout());
-    // );
+    return Scaffold(body: kIsWeb ? _webLayout() : _mobileLayout());
   }
 
   Widget _webLayout() {
@@ -31,7 +21,7 @@ class _CameraTestCompletedPageState extends State<CameraTestCompletedPage> {
         var maxHeight = constraints.maxHeight;
         var maxWidth = constraints.maxWidth;
         if (maxHeight > 500 && maxWidth > 600) {
-          // resize the content
+          // Resize the layout as height and width changes
           return Container(
             padding: const EdgeInsets.only(top: 50),
             alignment: Alignment.topCenter,
@@ -43,7 +33,7 @@ class _CameraTestCompletedPageState extends State<CameraTestCompletedPage> {
                     height: maxHeight * 0.7,
                     width: maxWidth * 0.6,
                     child:
-                        Center(child: const Text("Video will be played here"))),
+                        const Center(child: Text("Video will be played here"))),
                 SizedBox(
                   // height: maxHeight * 0.3,
                   width: maxWidth * 0.25,
@@ -53,6 +43,7 @@ class _CameraTestCompletedPageState extends State<CameraTestCompletedPage> {
             ),
           );
         } else {
+          //Fixed height and Width and enable scrolling
           return Center(
             child: SingleChildScrollView(
               scrollDirection: Axis.horizontal,
@@ -85,14 +76,13 @@ class _CameraTestCompletedPageState extends State<CameraTestCompletedPage> {
 
   Widget _mobileLayout() {
     return LayoutBuilder(builder: (context, constraints) {
-      // var maxHeight = constraints.maxHeight;
       var maxWidth = constraints.maxWidth;
       return Container(
         color: Colors.black,
         alignment: Alignment.center,
         child: Column(
           children: [
-             Expanded(
+            Expanded(
               child: Container(
                 color: Colors.blueGrey,
                 child: const Center(
