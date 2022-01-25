@@ -68,11 +68,11 @@ class CameraTestingBloc extends Bloc<CameraTestingEvent, CameraTestingState> {
     try {
       await _controller!.startVideoRecording();
 
-      emit(RecordingInProgressState(_controller, 0));
+      emit(RecordingInProgressState(_controller, 10));
 
       _tickerSubscription?.cancel();
       _tickerSubscription = _ticker
-          .tick(ticks: 0)
+          .tick(ticks: 10)
           .listen((duration) => add(TimerTickedEvent(duration: duration)));
     } on CameraException catch (e) {
       //will set state to CameraExceptionState state
@@ -82,7 +82,7 @@ class CameraTestingBloc extends Bloc<CameraTestingEvent, CameraTestingState> {
 
   void _timerTicked(TimerTickedEvent event, Emitter<CameraTestingState> emit) {
     debugPrint("_timerTicked ${event.duration}");
-    if (event.duration > 10) {
+    if (event.duration == 0) {
       add(StopRecordingEvent());
     } else {
       emit(RecordingInProgressState(_controller, event.duration));

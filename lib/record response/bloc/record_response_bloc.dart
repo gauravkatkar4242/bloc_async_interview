@@ -19,6 +19,8 @@ class RecordResponseBloc
   final CountDownTimer _ticker = const CountDownTimer();
   StreamSubscription<int>? _tickerSubscription;
 
+  int endTime = 100;
+
   RecordResponseBloc() : super(const CameraInitializingState(null)) {
     on<InitCameraEvent>(_initCamera);
     on<TimerTickedEvent>(_timerTicked);
@@ -54,10 +56,10 @@ class RecordResponseBloc
         emit(const ErrorInCameraState(null));
       }
       await cameraController.initialize();
-      emit(ReverseCountDownInProgressState(_controller, -3));
+      emit(ReverseCountDownInProgressState(_controller, 3));
       _tickerSubscription?.cancel();
       _tickerSubscription = _ticker
-          .tick(ticks: -3)
+          .tick(ticks: 3)
           .listen((duration) => add(TimerTickedEvent(duration: duration)));
     } on CameraException catch (e) {
       emit(const ErrorInCameraState(null));
@@ -67,13 +69,13 @@ class RecordResponseBloc
   void _timerTicked(TimerTickedEvent event, Emitter<RecordResponseState> emit) {
     debugPrint("_onTicked ${event.duration}");
 
-    if (event.duration < 0) {
+    if (event.duration > 0 && state is ReverseCountDownInProgressState) {
       // if timer is -3, -2, -1, emit ReverseCountDownInProgressState state
       emit(ReverseCountDownInProgressState(_controller, event.duration));
     } else if (event.duration == 0) {
       // when timer is 0 start the recording
       add(StartRecordingEvent());
-    } else if (event.duration >= 1000) {
+    } else if (event.duration >= endTime) {
       // for auto-stop recording... here it will stop recording after 1000 secs
       add(StopRecordingEvent());
     } else {
@@ -91,7 +93,12 @@ class RecordResponseBloc
     }
     try {
       await _controller!.startVideoRecording();
-      emit(RecordingInProgressState(_controller, 0));
+      emit(RecordingInProgressState(_controller, endTime));
+      _tickerSubscription?.cancel();
+      _tickerSubscription = _ticker
+          .tick(ticks: endTime)
+          .listen((duration) => add(TimerTickedEvent(duration: duration)));
+
     } on CameraException catch (e) {
       //will set state to ErrorInCameraState state
       emit(ErrorInCameraState(_controller));
