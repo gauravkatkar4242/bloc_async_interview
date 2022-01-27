@@ -14,7 +14,8 @@ class TestingPageCameraScreen extends StatefulWidget
 }
 
 class _TestingPageCameraScreenState extends State<TestingPageCameraScreen> {
-  // @override
+
+
   @override
   Widget build(BuildContext context) {
     var cameraBloc = BlocProvider.of<CameraTestingBloc>(context);
@@ -233,6 +234,7 @@ class _TestingPageCameraScreenState extends State<TestingPageCameraScreen> {
         if (state is RecordingCompletedState) {
           Navigator.of(context).pushReplacementNamed(
             '/cameraTestCompletedPage',
+            arguments: state.url
           );
           // context.read<CameraTestingBloc>().add(DisposeCameraEvent()); // need to dispose camera if only PUSH NAMED used
         }

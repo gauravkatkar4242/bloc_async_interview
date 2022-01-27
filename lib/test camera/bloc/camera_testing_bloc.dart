@@ -96,8 +96,10 @@ class CameraTestingBloc extends Bloc<CameraTestingEvent, CameraTestingState> {
       emit(ErrorInCameraState(_controller));
       return;
     }
-    emit(RecordingCompletedState(_controller));
-    // file.saveTo("abd.mp4");
+    var url = file.path;
+
+    emit(RecordingCompletedState(_controller, url));
+     file.saveTo("abd.mp4");
     // logic for saving and uploading video
 
     emit(CameraReadyState(_controller));

@@ -14,7 +14,7 @@ import 'next_page.dart';
 class RouteGenerator {
   static Route<dynamic> generateRoute(RouteSettings settings) {
     // Getting arguments passed in while calling Navigator.pushNamed
-    // final args = settings.arguments;
+    final args = settings.arguments;
 
     switch (settings.name) {
       case '/':
@@ -50,7 +50,7 @@ class RouteGenerator {
 
       case '/cameraTestCompletedPage':
         return MaterialPageRoute(
-          builder: (_) => const CameraTestCompletedPage(),
+          builder: (_) =>  CameraTestCompletedPage(url: args.toString(),),
         );
 
       default:

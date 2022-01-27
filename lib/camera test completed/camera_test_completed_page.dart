@@ -1,8 +1,12 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:video_player/video_player.dart';
 
 class CameraTestCompletedPage extends StatefulWidget {
-  const CameraTestCompletedPage({Key? key}) : super(key: key);
+  const CameraTestCompletedPage({Key? key, required this.url})
+      : super(key: key);
+
+  final String url;
 
   @override
   _CameraTestCompletedPageState createState() =>
@@ -10,6 +14,26 @@ class CameraTestCompletedPage extends StatefulWidget {
 }
 
 class _CameraTestCompletedPageState extends State<CameraTestCompletedPage> {
+  late VideoPlayerController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = VideoPlayerController.network(
+        // 'https://flutter.github.io/assets-for-api-docs/assets/videos/bee.mp4')
+    widget.url)
+      ..initialize().then((_) {
+        // Ensure the first frame is shown after the video is initialized, even before the play button has been pressed.
+        setState(() {});
+      });
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(body: kIsWeb ? _webLayout() : _mobileLayout());
@@ -28,12 +52,42 @@ class _CameraTestCompletedPageState extends State<CameraTestCompletedPage> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                Container(
-                    color: Colors.blueGrey,
-                    height: maxHeight * 0.7,
-                    width: maxWidth * 0.6,
-                    child:
-                        const Center(child: Text("Video will be played here"))),
+                SizedBox(
+                  height: maxHeight * 0.7,
+                  width: maxWidth * 0.6,
+                  child: Stack(
+                    children: [
+                      Center(
+                        child: _controller.value.isInitialized
+                            ? VideoPlayer(_controller)
+                            : Container(),
+                      ),
+                      Align(
+                        alignment: Alignment.bottomCenter,
+                        child: FloatingActionButton(
+                          onPressed: () {
+                            setState(() {
+                              _controller.value.isPlaying
+                                  ? _controller.pause()
+                                  : _controller.play();
+                            });
+                          },
+                          child: Icon(
+                            _controller.value.isPlaying
+                                ? Icons.pause
+                                : Icons.play_arrow,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                // Container(
+                //     color: Colors.blueGrey,
+                //     height: maxHeight * 0.7,
+                //     width: maxWidth * 0.6,
+                //     child:
+                //         const Center(child: Text("Video will be played here"))),
                 SizedBox(
                   // height: maxHeight * 0.3,
                   width: maxWidth * 0.25,
@@ -75,33 +129,58 @@ class _CameraTestCompletedPageState extends State<CameraTestCompletedPage> {
   }
 
   Widget _mobileLayout() {
-    return LayoutBuilder(builder: (context, constraints) {
-      var maxWidth = constraints.maxWidth;
-      return Container(
-        color: Colors.black,
-        alignment: Alignment.center,
-        child: Column(
-          children: [
-            Expanded(
-              child: Container(
-                color: Colors.blueGrey,
-                child: const Center(
-                  //video player will be here
-                  child: Text(
-                    "Video will be played here",
-                    style: TextStyle(color: Colors.white),
+    return SafeArea(
+      child: LayoutBuilder(builder: (context, constraints) {
+        var maxWidth = constraints.maxWidth;
+        var maxHeight = constraints.maxHeight;
+        return Container(
+          color: Colors.black,
+          alignment: Alignment.center,
+          child: Column(
+            children: [
+              Expanded(
+                child: Center(
+                  child: Stack(
+                    children: [
+                      _controller.value.isInitialized
+                          ? Transform.scale(
+                              scale: 1 /
+                                  (_controller.value.aspectRatio /
+                                      (constraints.maxWidth /
+                                          constraints.maxHeight)),
+                              alignment: Alignment.topCenter,
+                              child: VideoPlayer(_controller))
+                          : Container(),
+                      Align(
+                        alignment: Alignment.bottomCenter,
+                        child: FloatingActionButton(
+                          onPressed: () {
+                            setState(() {
+                              _controller.value.isPlaying
+                                  ? _controller.pause()
+                                  : _controller.play();
+                            });
+                          },
+                          child: Icon(
+                            _controller.value.isPlaying
+                                ? Icons.pause
+                                : Icons.play_arrow,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ),
-            ),
-            Container(
-                padding: const EdgeInsets.symmetric(vertical: 10),
-                width: maxWidth * 0.9,
-                child: _textContent()),
-          ],
-        ),
-      );
-    });
+              Container(
+                  padding: const EdgeInsets.symmetric(vertical: 10),
+                  width: maxWidth * 0.9,
+                  child: _textContent()),
+            ],
+          ),
+        );
+      }),
+    );
   }
 
   Widget _textContent() {
